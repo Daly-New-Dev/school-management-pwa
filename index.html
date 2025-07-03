@@ -67,12 +67,25 @@
             display: none !important;
         }
 
+        /* --- Full Page Loader --- */
+        .loader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
         /* --- Login Screen --- */
         .login-container {
             width: 100%;
             height: 100%;
             max-width: 420px;
-            /* Removed max-height to be more flexible */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -137,6 +150,9 @@
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
         }
+        .spinner-dark {
+             border-top-color: var(--primary-color);
+        }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -146,7 +162,6 @@
             width: 100%;
             height: 100%;
             max-width: 420px;
-            /* Removed max-height to allow it to fit any screen */
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -164,7 +179,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0; /* Prevent header from shrinking */
+            flex-shrink: 0;
         }
         .school-info {
             display: flex;
@@ -204,10 +219,10 @@
 
         /* --- Main Content Area (Responsive) --- */
         main {
-            flex-grow: 1; /* Allow main to fill available space */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Hide overflow, child will scroll */
+            overflow: hidden;
             padding: 1rem;
         }
 
@@ -222,7 +237,7 @@
             margin-bottom: 1rem;
             border-radius: 12px;
             cursor: pointer;
-            flex-shrink: 0; /* Prevent this bar from shrinking */
+            flex-shrink: 0;
         }
         .teacher-info {
             display: flex;
@@ -268,10 +283,10 @@
         .feature-menu {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-            grid-auto-rows: 1fr; /* Make rows flexible to fill height */
+            grid-auto-rows: 1fr;
             gap: 1rem;
-            flex-grow: 1; /* Allow the grid to fill the remaining space */
-            overflow: hidden; /* **KEY CHANGE**: Disable scrolling completely */
+            flex-grow: 1;
+            overflow: hidden;
         }
         .menu-item {
             background: var(--secondary-color);
@@ -285,7 +300,6 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             padding: 0.5rem;
-            /* **KEY CHANGE**: Removed aspect-ratio to allow items to be non-square */
         }
         .menu-item:hover {
             transform: translateY(-4px);
@@ -310,7 +324,7 @@
             padding: 0.5rem 0;
             border-top: 1px solid var(--border-color);
             z-index: 100;
-            flex-shrink: 0; /* Prevent nav from shrinking */
+            flex-shrink: 0;
         }
         .nav-item {
             display: flex;
@@ -345,7 +359,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2100;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -386,6 +400,10 @@
     </style>
 </head>
 <body>
+
+    <div id="full-page-loader" class="loader-overlay hidden">
+        <div class="spinner spinner-dark"></div>
+    </div>
 
     <div id="login-container" class="login-container">
         <h1>សូមស្វាគមន៍</h1>
@@ -491,6 +509,7 @@
             const loginSpinner = document.getElementById('login-spinner');
             const loginError = document.getElementById('login-error');
             const logoutButton = document.getElementById('logout-button');
+            const fullPageLoader = document.getElementById('full-page-loader');
             
             // --- Role-specific UI elements ---
             const userNameEl = document.getElementById('user-name');
@@ -525,14 +544,47 @@
                 "Messages": "សារ"
             };
 
+            // --- Live Data Refresh Function ---
+            async function refreshAndShowDashboard(username, password) {
+                fullPageLoader.classList.remove('hidden');
+                loginContainer.classList.add('hidden');
+                appContainer.classList.add('hidden');
+
+                try {
+                    const response = await fetch(`${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login`, {
+                        method: 'GET',
+                        mode: 'cors'
+                    });
+                    
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const result = await response.json();
+
+                    if (result.status === 'success') {
+                        sessionStorage.setItem('schoolAppUser', JSON.stringify(result.data));
+                        setupDashboard(result.data);
+                        appContainer.classList.remove('hidden');
+                    } else {
+                        // If credentials are now invalid, log out
+                        handleLogout();
+                    }
+                } catch (error) {
+                    console.error("Refresh Error:", error);
+                    // If refresh fails, log out
+                    handleLogout();
+                } finally {
+                    fullPageLoader.classList.add('hidden');
+                }
+            }
+
             // --- Session Handling Logic ---
             function checkSession() {
-                const userData = sessionStorage.getItem('schoolAppUser');
-                if (userData) {
-                    const parsedData = JSON.parse(userData);
-                    setupDashboard(parsedData);
-                    loginContainer.classList.add('hidden');
-                    appContainer.classList.remove('hidden');
+                const userCredentials = sessionStorage.getItem('schoolAppCredentials');
+                if (userCredentials) {
+                    const { username, password } = JSON.parse(userCredentials);
+                    refreshAndShowDashboard(username, password);
+                } else {
+                    loginContainer.classList.remove('hidden');
                 }
             }
 
@@ -553,13 +605,12 @@
                         mode: 'cors'
                     });
                     
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                     const result = await response.json();
 
                     if (result.status === 'success') {
+                        sessionStorage.setItem('schoolAppCredentials', JSON.stringify({ username, password }));
                         sessionStorage.setItem('schoolAppUser', JSON.stringify(result.data));
                         setupDashboard(result.data);
                         loginContainer.classList.add('hidden');
@@ -597,14 +648,19 @@
             }
 
             // --- Logout Logic ---
-            logoutButton.addEventListener('click', (e) => {
-                e.preventDefault();
+            function handleLogout() {
                 sessionStorage.removeItem('schoolAppUser');
+                sessionStorage.removeItem('schoolAppCredentials');
                 appContainer.classList.add('hidden');
                 loginContainer.classList.remove('hidden');
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 loginError.classList.add('hidden');
+            }
+
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleLogout();
             });
 
             // --- Modal Functionality ---
