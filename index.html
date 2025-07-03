@@ -13,8 +13,8 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- ** UPDATED **: Favicon and App Icons -->
-    <link rel="icon" type="image/png" href="icons/appicon.png">
-    <link rel="apple-touch-icon" href="icons/appicon.png">
+    <link rel="icon" type="image/png" href="icons/appicon.PNG">
+    <link rel="apple-touch-icon" href="icons/appicon.PNG">
 
     <!-- Google Fonts: Kantumruy Pro & Khmer OS Moul -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -168,14 +168,14 @@
             background-color: #fff;
         }
         .login-school-name {
-            font-family: 'Kantumruy Pro', sans-serif; /* Changed font */
-            font-size: 1.2rem; /* Adjusted size */
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-size: 1.2rem;
             font-weight: 700;
             line-height: 1.3;
         }
         .login-app-title {
-            font-family: 'Kantumruy Pro', sans-serif; /* Changed font */
-            font-size: 1.2rem; /* Adjusted size */
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-size: 1.2rem;
             font-weight: 700;
             margin-top: 0.25rem;
         }
@@ -557,7 +557,7 @@
 
     <div id="login-container" class="login-container">
         <div class="login-header">
-            <img src="icons/appicon.png" alt="School Logo" class="login-logo">
+            <img src="icons/appicon.PNG" alt="School Logo" class="login-logo">
             <h1 class="login-school-name">វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
             <h2 class="login-app-title">ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</h2>
         </div>
@@ -588,7 +588,7 @@
         <!-- --- Header (New Layout) --- -->
         <header class="header">
             <div class="header-side">
-                 <img id="school-logo-img" src="school_logo.png" alt="School Logo" class="logo">
+                 <img id="school-logo-img" src="icons/appicon.PNG" alt="School Logo" class="logo">
             </div>
             <div class="school-title-block">
                 <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
@@ -832,7 +832,7 @@
                     schoolLogoImg.src = data.SchoolLogo;
                 }
                 schoolLogoImg.onerror = () => {
-                    schoolLogoImg.src = 'school_logo.png'; 
+                    schoolLogoImg.src = 'icons/appicon.PNG'; 
                 };
 
                 teacherPhotoContainer.innerHTML = ''; 

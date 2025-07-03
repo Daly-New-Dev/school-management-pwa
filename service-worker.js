@@ -1,13 +1,13 @@
 // A more robust service worker with an update notification system.
 
-const CACHE_NAME = 'school-admin-cache-v11'; // **IMPORTANT**: Version incremented to trigger update.
+const CACHE_NAME = 'school-admin-cache-v10'; // **IMPORTANT**: Version incremented to trigger update.
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
   './school_logo.png',
-  './icons/appicon.png', // ** NEW **
-  './icons/appicon1.png', // ** NEW **
+  './icons/appicon.PNG', // ** UPDATED to uppercase **
+  './icons/appicon1.PNG', // ** UPDATED to uppercase **
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
   'https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Khmer+OS+Moul&display=swap'
 ];
