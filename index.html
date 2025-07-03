@@ -588,68 +588,70 @@
         </footer>
     </div>
 
-    <div id="app-container" class="page hidden">
-        <!-- --- Header (New Layout) --- -->
-        <header class="header">
-            <div class="header-side">
-                 <img id="school-logo-img" src="icons/appicon.PNG" alt="School Logo" class="logo">
-            </div>
-            <div class="school-title-block">
-                <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
-                <p>ឆ្នាំសិក្សា ២០២៤-២០២៥</p>
-            </div>
-            <div class="header-side">
-                <i id="refresh-button" class="fa-solid fa-rotate-right" data-feature="Refresh"></i>
-                <i class="fa-solid fa-qrcode" data-feature="QR Code"></i>
-            </div>
-        </header>
+    <div id="app-container" class="page-container hidden">
+        <div id="main-page" class="page">
+            <!-- --- Header (New Layout) --- -->
+            <header class="header">
+                <div class="header-side">
+                     <img id="school-logo-img" src="icons/appicon.PNG" alt="School Logo" class="logo">
+                </div>
+                <div class="school-title-block">
+                    <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
+                    <p>ឆ្នាំសិក្សា ២០២៤-២០២៥</p>
+                </div>
+                <div class="header-side">
+                    <i id="refresh-button" class="fa-solid fa-rotate-right" data-feature="Refresh"></i>
+                    <i class="fa-solid fa-qrcode" data-feature="QR Code"></i>
+                </div>
+            </header>
 
-        <!-- --- Main Content --- -->
-        <main id="main-content">
-            <div id="pull-to-refresh"><i class="fa-solid fa-arrow-down"></i></div>
+            <!-- --- Main Content --- -->
+            <main id="main-content">
+                <div id="pull-to-refresh"><i class="fa-solid fa-arrow-down"></i></div>
 
-            <div id="teacher-profile-bar" class="teacher-profile-bar" data-feature="Teacher Profile">
-                <div class="teacher-info">
-                    <div id="teacher-photo" class="teacher-photo">
-                        <!-- Profile image or icon will be inserted here by JavaScript -->
+                <div id="teacher-profile-bar" class="teacher-profile-bar" data-feature="Teacher Profile">
+                    <div class="teacher-info">
+                        <div id="teacher-photo" class="teacher-photo">
+                            <!-- Profile image or icon will be inserted here by JavaScript -->
+                        </div>
+                        <div class="teacher-details">
+                            <h2 id="user-name"></h2>
+                            <p id="user-role"></p>
+                        </div>
                     </div>
-                    <div class="teacher-details">
-                        <h2 id="user-name"></h2>
-                        <p id="user-role"></p>
+                    <div id="teacher-stats" class="teacher-stats">
+                        <div class="stat-item">
+                            <span id="total-students" class="count"></span>
+                            <span>សិស្សសរុប</span>
+                        </div>
+                        <div class="stat-item">
+                            <span id="female-students" class="count"></span>
+                            <span>សិស្សស្រី</span>
+                        </div>
                     </div>
                 </div>
-                <div id="teacher-stats" class="teacher-stats">
-                    <div class="stat-item">
-                        <span id="total-students" class="count"></span>
-                        <span>សិស្សសរុប</span>
-                    </div>
-                    <div class="stat-item">
-                        <span id="female-students" class="count"></span>
-                        <span>សិស្សស្រី</span>
-                    </div>
+
+                <div class="feature-menu">
+                    <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
+                    <div class="menu-item" data-feature="Score Input"><i class="fa-solid fa-file-pen"></i><span>បញ្ចូលពិន្ទុ</span></div>
+                    <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
+                    <div class="menu-item" data-feature="Homework"><i class="fa-solid fa-book"></i><span>កិច្ចការផ្ទះ</span></div>
+                    <div class="menu-item" data-feature="Library"><i class="fa-solid fa-book-open-reader"></i><span>បណ្ណាល័យ</span></div>
+                    <div class="menu-item" data-feature="Timetable"><i class="fa-solid fa-calendar-days"></i><span>កាលវិភាគ</span></div>
+                    <div class="menu-item" data-feature="Progress Report"><i class="fa-solid fa-chart-line"></i><span>របាយការណ៍</span></div>
+                    <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
+                    <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
                 </div>
-            </div>
+            </main>
 
-            <div class="feature-menu">
-                <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
-                <div class="menu-item" data-feature="Score Input"><i class="fa-solid fa-file-pen"></i><span>បញ្ចូលពិន្ទុ</span></div>
-                <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
-                <div class="menu-item" data-feature="Homework"><i class="fa-solid fa-book"></i><span>កិច្ចការផ្ទះ</span></div>
-                <div class="menu-item" data-feature="Library"><i class="fa-solid fa-book-open-reader"></i><span>បណ្ណាល័យ</span></div>
-                <div class="menu-item" data-feature="Timetable"><i class="fa-solid fa-calendar-days"></i><span>កាលវិភាគ</span></div>
-                <div class="menu-item" data-feature="Progress Report"><i class="fa-solid fa-chart-line"></i><span>របាយការណ៍</span></div>
-                <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
-                <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
-            </div>
-        </main>
-
-        <!-- --- Bottom Navigation --- -->
-        <nav class="bottom-nav">
-            <a class="nav-item active" data-nav="home"> <i class="fa-solid fa-house"></i> <span>ទំព័រដើម</span> </a>
-            <a class="nav-item" data-nav="operations"> <i class="fa-solid fa-layer-group"></i> <span>ប្រតិបត្តិការ</span> </a>
-            <a class="nav-item" data-nav="notifications"> <i class="fa-regular fa-bell"></i> <span>ការជូនដំណឹង</span> <div id="notification-badge" class="notification-badge hidden"></div> </a>
-            <a id="logout-button" class="nav-item" data-feature="Logout"> <i class="fa-solid fa-right-from-bracket"></i> <span>ចាកចេញ</span> </a>
-        </nav>
+            <!-- --- Bottom Navigation --- -->
+            <nav class="bottom-nav">
+                <a class="nav-item active" data-nav="home"> <i class="fa-solid fa-house"></i> <span>ទំព័រដើម</span> </a>
+                <a class="nav-item" data-nav="operations"> <i class="fa-solid fa-layer-group"></i> <span>ប្រតិបត្តិការ</span> </a>
+                <a class="nav-item" data-nav="notifications"> <i class="fa-regular fa-bell"></i> <span>ការជូនដំណឹង</span> <div id="notification-badge" class="notification-badge hidden"></div> </a>
+                <a id="logout-button" class="nav-item" data-feature="Logout"> <i class="fa-solid fa-right-from-bracket"></i> <span>ចាកចេញ</span> </a>
+            </nav>
+        </div>
     </div>
 
     <!-- --- Universal Modal Pop-up --- -->
