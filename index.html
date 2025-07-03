@@ -12,10 +12,10 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
 
-    <!-- Google Fonts: Kantumruy Pro -->
+    <!-- Google Fonts: Kantumruy Pro & Khmer OS Moul -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Khmer+OS+Moul&display=swap" rel="stylesheet">
 
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -49,7 +49,6 @@
             -webkit-font-smoothing: antialiased;
             background-color: var(--text-dark);
             color: var(--text-dark);
-            /* Use dvh for dynamic viewport height to adapt to mobile browser bars */
             height: 100dvh;
             overflow: hidden;
             display: flex;
@@ -67,19 +66,61 @@
             display: none !important;
         }
 
-        /* --- Full Page Loader --- */
+        /* --- Full Page Loader (New Design) --- */
         .loader-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--background-color);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            transition: opacity 0.3s ease;
         }
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .loader-spinner {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .loader-spinner div {
+            width: 15px;
+            height: 15px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loader-spinner .dot1 {
+            animation-delay: -0.32s;
+        }
+        .loader-spinner .dot2 {
+            animation-delay: -0.16s;
+        }
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            } 40% {
+                transform: scale(1.0);
+            }
+        }
+        .loader-text-main {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .loader-text-sub {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
 
         /* --- Login Screen --- */
         .login-container {
@@ -150,9 +191,6 @@
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
         }
-        .spinner-dark {
-             border-top-color: var(--primary-color);
-        }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -171,7 +209,7 @@
             border-radius: 10px;
         }
 
-        /* --- Header Section --- */
+        /* --- Header Section (New Flexbox Layout) --- */
         .header {
             background-color: var(--primary-color);
             color: var(--text-light);
@@ -180,50 +218,86 @@
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
+            min-height: 85px; 
         }
-        .school-info {
+        .header-side {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 1.5rem; 
+            flex-shrink: 0; 
+        }
+        .header-side .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: var(--text-light);
+        }
+        .header-side i {
+            font-size: 1.45rem; 
             cursor: pointer;
         }
-        .school-info .logo {
-            width: 45px;
-            height: 45px;
-            background-color: var(--text-light);
-            border-radius: 50%;
+        .school-title-block {
+            flex-grow: 1;
+            min-width: 0; 
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            flex-shrink: 0;
+            text-align: center;
+            margin: 0 0.5rem;
         }
-        .school-details h1 {
-            font-size: clamp(0.8rem, 2.2vh, 0.9rem);
-            font-weight: 700;
+        .school-title-block h1 {
+            font-family: 'Kantumruy Pro', sans-serif; 
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
+            font-weight: 700; 
+            line-height: 1.2; 
+            max-width: 100%;
         }
-        .school-details p {
-            font-size: clamp(0.7rem, 1.8vh, 0.75rem);
+        .school-title-block p {
+            font-size: 0.8rem;
             color: var(--text-light-secondary);
+            margin-top: 0.15rem;
+            white-space: nowrap;
         }
-        .header-icons {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-        .header-icons i {
-            font-size: 1.4rem;
-            cursor: pointer;
-        }
+
 
         /* --- Main Content Area (Responsive) --- */
         main {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
             padding: 1rem;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+        }
+        main::-webkit-scrollbar { display: none; }
+        main { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Pull to Refresh Indicator */
+        #pull-to-refresh {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            transition: top 0.3s ease;
+        }
+        #pull-to-refresh.visible {
+            top: 10px;
+        }
+        #pull-to-refresh i {
+            transition: transform 0.3s;
+        }
+        #pull-to-refresh.visible.ready i {
+            transform: rotate(180deg);
         }
 
         /* --- Teacher Profile Bar --- */
@@ -244,7 +318,7 @@
             align-items: center;
             gap: 1rem;
         }
-        .teacher-info .teacher-photo {
+        .teacher-photo {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -255,6 +329,12 @@
             font-size: 1.8rem;
             color: var(--text-secondary);
             flex-shrink: 0;
+            overflow: hidden;
+        }
+        .teacher-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .teacher-details h2 {
             font-size: clamp(1rem, 2.5vh, 1.1rem);
@@ -273,6 +353,7 @@
             font-size: clamp(1.1rem, 2.8vh, 1.2rem);
             font-weight: 700;
             color: var(--primary-color);
+            display: block; /* **KEY CHANGE** */
         }
         .stat-item span:not(.count) {
             font-size: clamp(0.65rem, 1.5vh, 0.7rem);
@@ -286,7 +367,6 @@
             grid-auto-rows: 1fr;
             gap: 1rem;
             flex-grow: 1;
-            overflow: hidden;
         }
         .menu-item {
             background: var(--secondary-color);
@@ -316,12 +396,12 @@
             color: var(--text-secondary);
         }
 
-        /* --- Bottom Navigation Bar --- */
+        /* --- Bottom Navigation Bar (New Layout) --- */
         .bottom-nav {
             background: var(--secondary-color);
             display: flex;
             justify-content: space-around;
-            padding: 0.5rem 0;
+            padding: 0.75rem 0;
             border-top: 1px solid var(--border-color);
             z-index: 100;
             flex-shrink: 0;
@@ -340,10 +420,11 @@
             color: var(--primary-color);
         }
         .nav-item i {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
         }
         .nav-item span {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
@@ -402,7 +483,15 @@
 <body>
 
     <div id="full-page-loader" class="loader-overlay hidden">
-        <div class="spinner spinner-dark"></div>
+        <div class="loader-content">
+            <div class="loader-spinner">
+                <div class="dot1"></div>
+                <div class="dot2"></div>
+                <div class="dot3"></div>
+            </div>
+            <p class="loader-text-main">សូមមេត្តារង់ចាំ</p>
+            <p class="loader-text-sub">ប្រព័ន្ធកំពុងទាញយកទិន្នន័យ...</p>
+        </div>
     </div>
 
     <div id="login-container" class="login-container">
@@ -420,27 +509,30 @@
     </div>
 
     <div id="app-container" class="app-container hidden">
-        <!-- --- Header --- -->
+        <!-- --- Header (New Layout) --- -->
         <header class="header">
-            <div class="school-info" data-feature="School Profile">
-                <div class="logo"><i class="fa-solid fa-school-flag"></i></div>
-                <div class="school-details">
-                    <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
-                    <p>ឆ្នាំសិក្សា ២០២៤-២០២៥</p>
-                </div>
+            <div class="header-side">
+                 <img src="school_logo.png" alt="School Logo" class="logo">
             </div>
-            <div class="header-icons">
+            <div class="school-title-block">
+                <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
+                <p>ឆ្នាំសិក្សា ២០២៤-២០២៥</p>
+            </div>
+            <div class="header-side">
+                <i id="refresh-button" class="fa-solid fa-rotate-right" data-feature="Refresh"></i>
                 <i class="fa-regular fa-bell" data-feature="Notifications"></i>
                 <i class="fa-solid fa-qrcode" data-feature="QR Code"></i>
             </div>
         </header>
 
         <!-- --- Main Content --- -->
-        <main>
+        <main id="main-content">
+            <div id="pull-to-refresh"><i class="fa-solid fa-arrow-down"></i></div>
+
             <div id="teacher-profile-bar" class="teacher-profile-bar" data-feature="Teacher Profile">
                 <div class="teacher-info">
-                    <div class="teacher-photo">
-                        <i id="user-icon" class="fa-solid fa-user-tie"></i>
+                    <div id="teacher-photo" class="teacher-photo">
+                        <!-- Profile image or icon will be inserted here by JavaScript -->
                     </div>
                     <div class="teacher-details">
                         <h2 id="user-name"></h2>
@@ -510,11 +602,14 @@
             const loginError = document.getElementById('login-error');
             const logoutButton = document.getElementById('logout-button');
             const fullPageLoader = document.getElementById('full-page-loader');
+            const mainContent = document.getElementById('main-content');
+            const pullToRefreshIndicator = document.getElementById('pull-to-refresh');
+            const refreshButton = document.getElementById('refresh-button');
             
             // --- Role-specific UI elements ---
+            const teacherPhotoContainer = document.getElementById('teacher-photo');
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
-            const userIconEl = document.getElementById('user-icon');
             const teacherProfileBar = document.getElementById('teacher-profile-bar');
             const teacherStats = document.getElementById('teacher-stats');
             const totalStudentsEl = document.getElementById('total-students');
@@ -548,34 +643,24 @@
             async function refreshAndShowDashboard(username, password) {
                 fullPageLoader.classList.remove('hidden');
                 loginContainer.classList.add('hidden');
-                appContainer.classList.add('hidden');
-
+                
                 try {
-                    // **FIX**: Add a unique timestamp to the URL to bypass the browser cache
                     const timestamp = new Date().getTime();
                     const fetchURL = `${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login&t=${timestamp}`;
 
-                    const response = await fetch(fetchURL, {
-                        method: 'GET',
-                        mode: 'cors'
-                    });
-                    
+                    const response = await fetch(fetchURL, { method: 'GET', mode: 'cors' });
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
                     const result = await response.json();
 
                     if (result.status === 'success') {
-                        // We still store the user data for display, but credentials for re-fetch
                         sessionStorage.setItem('schoolAppUser', JSON.stringify(result.data));
                         setupDashboard(result.data);
-                        appContainer.classList.remove('hidden');
+                        appContainer.classList.remove('hidden'); 
                     } else {
-                        // If credentials are now invalid, log out
                         handleLogout();
                     }
                 } catch (error) {
                     console.error("Refresh Error:", error);
-                    // If refresh fails, log out
                     handleLogout();
                 } finally {
                     fullPageLoader.classList.add('hidden');
@@ -605,17 +690,11 @@
                 loginError.classList.add('hidden');
                 
                 try {
-                    // **FIX**: Add a unique timestamp to the URL to bypass the browser cache
                     const timestamp = new Date().getTime();
                     const fetchURL = `${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login&t=${timestamp}`;
 
-                    const response = await fetch(fetchURL, {
-                        method: 'GET',
-                        mode: 'cors'
-                    });
-                    
+                    const response = await fetch(fetchURL, { method: 'GET', mode: 'cors' });
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
                     const result = await response.json();
 
                     if (result.status === 'success') {
@@ -643,12 +722,31 @@
                 userNameEl.textContent = data.FullName;
                 userRoleEl.textContent = data.ClassGrade;
                 
+                teacherPhotoContainer.innerHTML = ''; 
+                
+                const showIcon = (iconClass) => {
+                    const icon = document.createElement('i');
+                    icon.className = iconClass;
+                    teacherPhotoContainer.appendChild(icon);
+                };
+
+                if (data.PhotoURL && data.PhotoURL.trim() !== '') {
+                    const img = document.createElement('img');
+                    img.src = data.PhotoURL;
+                    img.alt = "Profile Photo";
+                    img.onerror = () => {
+                        teacherPhotoContainer.innerHTML = '';
+                        showIcon(data.Role === 'admin' ? 'fa-solid fa-user-shield' : 'fa-solid fa-user-tie');
+                    };
+                    teacherPhotoContainer.appendChild(img);
+                } else {
+                    showIcon(data.Role === 'admin' ? 'fa-solid fa-user-shield' : 'fa-solid fa-user-tie');
+                }
+
                 if (data.Role === 'admin') {
-                    userIconEl.className = 'fa-solid fa-user-shield';
                     teacherProfileBar.dataset.feature = "Admin Profile";
                     teacherStats.classList.add('hidden');
                 } else {
-                    userIconEl.className = 'fa-solid fa-user-tie';
                     teacherProfileBar.dataset.feature = "Teacher Profile";
                     totalStudentsEl.textContent = data.TotalStudents;
                     femaleStudentsEl.textContent = data.FemaleStudents;
@@ -672,6 +770,60 @@
                 handleLogout();
             });
 
+            // --- Refresh Button Logic ---
+            refreshButton.addEventListener('click', () => {
+                const userCredentials = sessionStorage.getItem('schoolAppCredentials');
+                if (userCredentials) {
+                    const { username, password } = JSON.parse(userCredentials);
+                    refreshAndShowDashboard(username, password);
+                }
+            });
+
+            // --- iOS Pull-to-Refresh Logic ---
+            let startY = 0;
+            let pullDistance = 0;
+            const refreshThreshold = 80;
+
+            mainContent.addEventListener('touchstart', (e) => {
+                if (mainContent.scrollTop === 0) {
+                    startY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            mainContent.addEventListener('touchmove', (e) => {
+                if (startY === 0) return;
+                pullDistance = e.touches[0].clientY - startY;
+                if (pullDistance > 0) {
+                    pullToRefreshIndicator.classList.add('visible');
+                    if (pullDistance > refreshThreshold) {
+                        pullToRefreshIndicator.classList.add('ready');
+                    } else {
+                        pullToRefreshIndicator.classList.remove('ready');
+                    }
+                }
+            }, { passive: true });
+
+            mainContent.addEventListener('touchend', () => {
+                if (pullDistance > refreshThreshold) {
+                    const userCredentials = sessionStorage.getItem('schoolAppCredentials');
+                    if (userCredentials) {
+                        const { username, password } = JSON.parse(userCredentials);
+                        pullToRefreshIndicator.innerHTML = '<div class="spinner spinner-dark"></div>';
+                        refreshAndShowDashboard(username, password).finally(() => {
+                             setTimeout(() => {
+                                pullToRefreshIndicator.classList.remove('visible', 'ready');
+                                pullToRefreshIndicator.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
+                            }, 500);
+                        });
+                    }
+                } else {
+                    pullToRefreshIndicator.classList.remove('visible', 'ready');
+                }
+                startY = 0;
+                pullDistance = 0;
+            });
+
+
             // --- Modal Functionality ---
             const modalOverlay = document.getElementById('modal-overlay');
             const modalText = document.getElementById('modal-text');
@@ -690,8 +842,9 @@
 
             clickableElements.forEach(element => {
                 element.addEventListener('click', () => {
-                    if(element.dataset.feature === 'Logout') return;
-                    showModal(element.dataset.feature);
+                    const feature = element.dataset.feature;
+                    if(feature === 'Logout' || feature === 'Refresh') return;
+                    showModal(feature);
                     if (element.classList.contains('nav-item')) {
                         document.querySelectorAll('.nav-item.active').forEach(activeItem => activeItem.classList.remove('active'));
                         element.classList.add('active');
