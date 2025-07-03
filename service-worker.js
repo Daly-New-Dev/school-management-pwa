@@ -1,6 +1,6 @@
 // A more robust service worker with an update notification system.
 
-const CACHE_NAME = 'school-admin-cache-v7'; // **IMPORTANT**: Version incremented to trigger update.
+const CACHE_NAME = 'school-admin-cache-v8'; // **IMPORTANT**: Version incremented to trigger update.
 const urlsToCache = [
   './',
   './index.html',
