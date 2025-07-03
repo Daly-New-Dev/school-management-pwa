@@ -522,7 +522,7 @@
             const femaleStudentsEl = document.getElementById('female-students');
 
             // --- Backend URL ---
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz58PsKVG_8wZeq0N0jhhSWi-pDMRILjacs5_CXCI5nl3hS5Wp1oQcxNs0kpzEYRo4fgw/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8O75ZEEjGEqqE5vYauW4N3uR2QZqEAV1NeujPdl7rXZd8NihbNAIGea6lH6tQuAIvAQ/exec";
 
             // --- Translation Map ---
             const featureTranslations = {
@@ -555,16 +555,23 @@
                 loginButtonText.classList.add('hidden');
                 loginSpinner.classList.remove('hidden');
                 loginError.classList.add('hidden');
+                
+                // **UPDATED FETCH LOGIC**
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
 
                 try {
-                    const response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ username, password })
+                    // We use a GET request with parameters in the URL to avoid complex CORS preflight requests on desktop
+                    const response = await fetch(`${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login`, {
+                        method: 'GET',
+                        mode: 'cors'
                     });
 
-                    const result = await response.json();
+                    // The actual doPost will be triggered by a redirect from doGet in the Apps Script
+                    const finalResponse = await fetch(response.url);
+                    const result = await finalResponse.json();
+
 
                     if (result.status === 'success') {
                         setupDashboard(result.data);
