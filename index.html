@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <!-- Core PWA & Mobile-First Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#3963de">
+    <title>ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Google Fonts: Kantumruy Pro -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- Root Variables & Global Styles --- */
+        :root {
+            --primary-color: #3963de;
+            --secondary-color: #ffffff;
+            --background-color: #f0f2f5;
+            --text-dark: #0A192F;
+            --text-secondary: #5A677B;
+            --text-light: #ffffff;
+            --text-light-secondary: rgba(255, 255, 255, 0.8);
+            --border-color: #e0eaf3;
+            --error-color: #e53e3e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: var(--text-dark); /* Dark background for the whole page */
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling of the body */
+            display: flex;
+            justify-content: center; /* Center the app container */
+            align-items: center; /* Center the app container */
+        }
+
+        /* --- Native App Feel Enhancements --- */
+        body {
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
+            touch-action: manipulation; /* Improve touch responsiveness */
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- Login Screen --- */
+        .login-container {
+            width: 100%;
+            height: 100%;
+            max-width: 384px;
+            max-height: 824px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--background-color);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .login-container h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .login-container p {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-size: 1rem;
+        }
+        #login-error {
+            color: var(--error-color);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        #login-button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #login-button:hover {
+            background-color: #2a52be;
+        }
+        #login-button:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+
+        /* --- Main App Container --- */
+        .app-container {
+            width: 100%;
+            height: 100%;
+            max-width: 384px;   /* Max width constraint */
+            max-height: 824px;  /* Max height constraint */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ensure container manages its own scrolling */
+            background-color: var(--background-color); /* Background for the app itself */
+            position: relative; /* Needed for fixed children */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Add shadow for better visibility */
+            border-radius: 10px; /* Optional: rounded corners for the container */
+        }
+
+        /* --- Header Section (Fixed) --- */
+        .header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0; /* Prevent header from shrinking */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .school-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .school-info .logo {
+            width: 45px;
+            height: 45px;
+            background-color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .school-details h1 {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .school-details p {
+            font-size: 0.75rem;
+            color: var(--text-light-secondary);
+        }
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .header-icons i {
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        /* --- Teacher Profile Bar --- */
+        .teacher-profile-bar {
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Aligns items to the edges */
+            padding: 0.75rem 1rem;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .teacher-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .teacher-info .teacher-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .teacher-details h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .teacher-details p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .teacher-stats {
+            display: flex;
+            gap: 1rem;
+            text-align: center;
+        }
+        .stat-item .count {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        .stat-item span:not(.count) {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+
+        /* --- Main Content Area --- */
+        main {
+            flex-grow: 1;
+            overflow-y: hidden; /* Scrolling disabled */
+            padding: 1rem;
+            padding-top: calc(45px + 1.5rem + 1rem); /* Header height + padding */
+            padding-bottom: 75px; /* Bottom nav height */
+        }
+
+        /* --- Feature Menu Grid --- */
+        .feature-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            height: 100%;
+        }
+        .menu-item {
+            background: var(--secondary-color);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            padding: 1rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .menu-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+        .menu-item i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+        }
+        .menu-item span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
+        /* --- Bottom Navigation Bar (Fixed) --- */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--secondary-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.2rem;
+            flex-grow: 1;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .nav-item.active, .nav-item:hover {
+            color: var(--primary-color);
+        }
+        .nav-item i {
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
+        }
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* --- Universal Modal Pop-up --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 25, 47, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background-color: var(--secondary-color);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            color: var(--text-dark);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            max-width: 85%;
+        }
+        .modal-overlay.visible .modal-box {
+            transform: scale(1);
+        }
+        .modal-box p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        .modal-box button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .modal-box button:hover {
+            background-color: #2a52be;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-container" class="login-container">
+        <h1>សូមស្វាគមន៍</h1>
+        <p>សូមចូលគណនីរបស់អ្នកដើម្បីបន្ត</p>
+        <form id="login-form" class="login-form" onsubmit="return false;">
+            <input id="username" type="text" placeholder="ឈ្មោះគណនី" required>
+            <input id="password" type="password" placeholder="ពាក្យសម្ងាត់" required>
+            <div id="login-error" class="hidden"></div>
+            <button id="login-button" type="submit">
+                <span id="login-button-text">ចូលប្រើ</span>
+                <div id="login-spinner" class="spinner hidden"></div>
+            </button>
+        </form>
+    </div>
+
+    <div id="app-container" class="app-container hidden">
+        <!-- --- Header --- -->
+        <header class="header">
+            <div class="school-info" data-feature="School Profile">
+                <div class="logo"><i class="fa-solid fa-school-flag"></i></div>
+                <div class="school-details">
+                    <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
+                    <p>ឆ្នាំសិក្សា ២០២៤-២០២៥</p>
+                </div>
+            </div>
+            <div class="header-icons">
+                <i class="fa-regular fa-bell" data-feature="Notifications"></i>
+                <i class="fa-solid fa-qrcode" data-feature="QR Code"></i>
+            </div>
+        </header>
+
+        <!-- --- Main Content --- -->
+        <main>
+            <div id="teacher-profile-bar" class="teacher-profile-bar" data-feature="Teacher Profile">
+                <div class="teacher-info">
+                    <div class="teacher-photo">
+                        <i id="user-icon" class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="teacher-details">
+                        <h2 id="user-name"></h2>
+                        <p id="user-role"></p>
+                    </div>
+                </div>
+                <div id="teacher-stats" class="teacher-stats">
+                    <div class="stat-item">
+                        <span id="total-students" class="count"></span>
+                        <span>សិស្សសរុប</span>
+                    </div>
+                    <div class="stat-item">
+                        <span id="female-students" class="count"></span>
+                        <span>សិស្សស្រី</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-menu">
+                <div class="menu-item" data-feature="Student List"><i class="fa-solid fa-users"></i><span>បញ្ជីឈ្មោះសិស្ស</span></div>
+                <div class="menu-item" data-feature="Score Input"><i class="fa-solid fa-file-pen"></i><span>បញ្ចូលពិន្ទុ</span></div>
+                <div class="menu-item" data-feature="Attendance"><i class="fa-solid fa-user-check"></i><span>វត្តមាន</span></div>
+                <div class="menu-item" data-feature="Homework"><i class="fa-solid fa-book"></i><span>កិច្ចការផ្ទះ</span></div>
+                <div class="menu-item" data-feature="Library"><i class="fa-solid fa-book-open-reader"></i><span>បណ្ណាល័យ</span></div>
+                <div class="menu-item" data-feature="Timetable"><i class="fa-solid fa-calendar-days"></i><span>កាលវិភាគ</span></div>
+                <div class="menu-item" data-feature="Progress Report"><i class="fa-solid fa-chart-line"></i><span>របាយការណ៍</span></div>
+                <div class="menu-item" data-feature="Announcements"><i class="fa-solid fa-bullhorn"></i><span>សេចក្តីជូនដំណឹង</span></div>
+                <div class="menu-item" data-feature="Settings"><i class="fa-solid fa-gear"></i><span>ការកំណត់</span></div>
+            </div>
+        </main>
+
+        <!-- --- Bottom Navigation --- -->
+        <nav class="bottom-nav">
+            <a class="nav-item active" data-feature="Home"> <i class="fa-solid fa-house"></i> <span>ទំព័រដើម</span> </a>
+            <a class="nav-item" data-feature="Operations"> <i class="fa-solid fa-layer-group"></i> <span>ប្រតិបត្តិការ</span> </a>
+            <a class="nav-item" data-feature="Messages"> <i class="fa-solid fa-comments"></i> <span>សារ</span> </a>
+            <a id="logout-button" class="nav-item" data-feature="Logout"> <i class="fa-solid fa-right-from-bracket"></i> <span>ចាកចេញ</span> </a>
+        </nav>
+    </div>
+
+    <!-- --- Universal Modal --- -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <p id="modal-text"></p>
+            <button id="modal-close">បិទ</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- PWA Service Worker Registration ---
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js').catch(err => console.error('Service Worker registration failed:', err));
+            }
+
+            // --- Prevent Browser Zooming ---
+            document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+            document.addEventListener('keydown', e => { if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) e.preventDefault(); });
+
+            // --- UI Elements ---
+            const loginContainer = document.getElementById('login-container');
+            const appContainer = document.getElementById('app-container');
+            const loginForm = document.getElementById('login-form');
+            const loginButton = document.getElementById('login-button');
+            const loginButtonText = document.getElementById('login-button-text');
+            const loginSpinner = document.getElementById('login-spinner');
+            const loginError = document.getElementById('login-error');
+            const logoutButton = document.getElementById('logout-button');
+            
+            // --- Role-specific UI elements ---
+            const userNameEl = document.getElementById('user-name');
+            const userRoleEl = document.getElementById('user-role');
+            const userIconEl = document.getElementById('user-icon');
+            const teacherProfileBar = document.getElementById('teacher-profile-bar');
+            const teacherStats = document.getElementById('teacher-stats');
+            const totalStudentsEl = document.getElementById('total-students');
+            const femaleStudentsEl = document.getElementById('female-students');
+
+            // --- Backend URL ---
+            const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+            // --- Translation Map ---
+            const featureTranslations = {
+                "School Profile": "ប្រវត្តិរូបសាលា",
+                "Notifications": "ការជូនដំណឹង",
+                "QR Code": "កូដ QR",
+                "Teacher Profile": "ប្រវត្តិរូបគ្រូ",
+                "Admin Profile": "ប្រវត្តិរូបអ្នកគ្រប់គ្រង",
+                "Student List": "បញ្ជីឈ្មោះសិស្ស",
+                "Score Input": "បញ្ចូលពិន្ទុ",
+                "Attendance": "វត្តមាន",
+                "Homework": "កិច្ចការផ្ទះ",
+                "Library": "បណ្ណាល័យ",
+                "Timetable": "កាលវិភាគ",
+                "Progress Report": "របាយការណ៍",
+                "Announcements": "សេចក្តីជូនដំណឹង",
+                "Settings": "ការកំណត់",
+                "Home": "ទំព័រដើម",
+                "Operations": "ប្រតិបត្តិការ",
+                "Messages": "សារ"
+            };
+
+            // --- Login Logic ---
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                loginButton.disabled = true;
+                loginButtonText.classList.add('hidden');
+                loginSpinner.classList.remove('hidden');
+                loginError.classList.add('hidden');
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.status === 'success') {
+                        setupDashboard(result.data);
+                        loginContainer.classList.add('hidden');
+                        appContainer.classList.remove('hidden');
+                    } else {
+                        loginError.textContent = "ឈ្មោះគណនី ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ";
+                        loginError.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error("Login Error:", error);
+                    loginError.textContent = 'មិនអាចភ្ជាប់ទៅម៉ាស៊ីនមេបានទេ';
+                    loginError.classList.remove('hidden');
+                } finally {
+                    loginButton.disabled = false;
+                    loginButtonText.classList.remove('hidden');
+                    loginSpinner.classList.add('hidden');
+                }
+            });
+
+            function setupDashboard(data) {
+                userNameEl.textContent = data.FullName;
+                userRoleEl.textContent = data.ClassGrade;
+                
+                if (data.Role === 'admin') {
+                    userIconEl.className = 'fa-solid fa-user-shield';
+                    teacherProfileBar.dataset.feature = "Admin Profile";
+                    teacherStats.classList.add('hidden');
+                } else {
+                    userIconEl.className = 'fa-solid fa-user-tie';
+                    teacherProfileBar.dataset.feature = "Teacher Profile";
+                    totalStudentsEl.textContent = data.TotalStudents;
+                    femaleStudentsEl.textContent = data.FemaleStudents;
+                    teacherStats.classList.remove('hidden');
+                }
+            }
+
+            // --- Logout Logic ---
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                appContainer.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                loginError.classList.add('hidden');
+            });
+
+
+            // --- Modal Functionality ---
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalText = document.getElementById('modal-text');
+            const modalCloseBtn = document.getElementById('modal-close');
+            const clickableElements = document.querySelectorAll('[data-feature]');
+
+            function showModal(featureName) {
+                const translatedFeature = featureTranslations[featureName] || featureName;
+                modalText.textContent = `តំបន់៖ "${translatedFeature}"`;
+                modalOverlay.classList.add('visible');
+            }
+
+            function hideModal() {
+                modalOverlay.classList.remove('visible');
+            }
+
+            clickableElements.forEach(element => {
+                element.addEventListener('click', () => {
+                    if(element.dataset.feature === 'Logout') return;
+                    showModal(element.dataset.feature);
+                    if (element.classList.contains('nav-item')) {
+                        document.querySelectorAll('.nav-item.active').forEach(activeItem => activeItem.classList.remove('active'));
+                        element.classList.add('active');
+                    }
+                });
+            });
+
+            modalCloseBtn.addEventListener('click', hideModal);
+            modalOverlay.addEventListener('click', (event) => {
+                if (event.target === modalOverlay) hideModal();
+            });
+        });
+    </script>
+</body>
+</html>

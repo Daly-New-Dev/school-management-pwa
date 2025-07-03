@@ -1,0 +1,21 @@
+{
+  "name": "School Management System",
+  "short_name": "SchoolAdmin",
+  "description": "Admin & Teacher Dashboard for the School Management System.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#3963de",
+  "icons": [
+    {
+      "src": "https://placehold.co/192x192/3963de/ffffff?text=SA",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://placehold.co/512x512/3963de/ffffff?text=SA",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
