@@ -352,14 +352,14 @@
             gap: 1.25rem;
         }
         .teacher-photo {
-            width: 60px; /* Increased size */
-            height: 60px; /* Increased size */
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background-color: var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem; /* Increased icon size */
+            font-size: 2.2rem;
             color: var(--text-secondary);
             flex-shrink: 0;
             overflow: hidden;
@@ -716,7 +716,7 @@
                     const result = await response.json();
 
                     if (result.status === 'success') {
-                        sessionStorage.setItem('schoolAppUser', JSON.stringify(result.data));
+                        localStorage.setItem('schoolAppUser', JSON.stringify(result.data));
                         setupDashboard(result.data);
                         appContainer.classList.remove('hidden'); 
                     } else {
@@ -732,7 +732,7 @@
 
             // --- Session Handling Logic ---
             function checkSession() {
-                const userCredentials = sessionStorage.getItem('schoolAppCredentials');
+                const userCredentials = localStorage.getItem('schoolAppCredentials');
                 if (userCredentials) {
                     const { username, password } = JSON.parse(userCredentials);
                     refreshAndShowDashboard(username, password);
@@ -761,8 +761,8 @@
                     const result = await response.json();
 
                     if (result.status === 'success') {
-                        sessionStorage.setItem('schoolAppCredentials', JSON.stringify({ username, password }));
-                        sessionStorage.setItem('schoolAppUser', JSON.stringify(result.data));
+                        localStorage.setItem('schoolAppCredentials', JSON.stringify({ username, password }));
+                        localStorage.setItem('schoolAppUser', JSON.stringify(result.data));
                         setupDashboard(result.data);
                         loginContainer.classList.add('hidden');
                         appContainer.classList.remove('hidden');
@@ -826,8 +826,8 @@
 
             // --- Logout Logic ---
             function handleLogout() {
-                sessionStorage.removeItem('schoolAppUser');
-                sessionStorage.removeItem('schoolAppCredentials');
+                localStorage.removeItem('schoolAppUser');
+                localStorage.removeItem('schoolAppCredentials');
                 appContainer.classList.add('hidden');
                 loginContainer.classList.remove('hidden');
                 document.getElementById('username').value = '';
@@ -842,7 +842,7 @@
 
             // --- Refresh Button Logic ---
             refreshButton.addEventListener('click', () => {
-                const userCredentials = sessionStorage.getItem('schoolAppCredentials');
+                const userCredentials = localStorage.getItem('schoolAppCredentials');
                 if (userCredentials) {
                     const { username, password } = JSON.parse(userCredentials);
                     refreshAndShowDashboard(username, password);
@@ -875,7 +875,7 @@
 
             mainContent.addEventListener('touchend', () => {
                 if (pullDistance > refreshThreshold) {
-                    const userCredentials = sessionStorage.getItem('schoolAppCredentials');
+                    const userCredentials = localStorage.getItem('schoolAppCredentials');
                     if (userCredentials) {
                         const { username, password } = JSON.parse(userCredentials);
                         pullToRefreshIndicator.innerHTML = '<div class="spinner spinner-dark"></div>';
