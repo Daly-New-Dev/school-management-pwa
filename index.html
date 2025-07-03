@@ -148,7 +148,7 @@
             max-width: 420px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between; /* Pushes footer to bottom */
             align-items: center;
             background: linear-gradient(160deg, #4e75f2, #2a52be);
             padding: 2rem;
@@ -156,11 +156,7 @@
         }
         .login-header {
             text-align: center;
-            margin-bottom: 2.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            margin-top: 2rem;
         }
         .login-logo {
             width: 90px;
@@ -187,15 +183,17 @@
             font-weight: 600;
             margin-top: 0.25rem;
         }
+        .login-form-container {
+            width: 100%;
+        }
         .login-prompt {
             font-size: 0.9rem;
             color: var(--text-light-secondary);
-            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
-
         .login-form {
             width: 100%;
-            flex-shrink: 0;
         }
         .input-group {
             position: relative;
@@ -245,6 +243,13 @@
             color: #fff;
             cursor: not-allowed;
             box-shadow: none;
+        }
+        .login-footer {
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-light-secondary);
+            padding-bottom: 1rem;
         }
         .spinner {
             width: 20px;
@@ -561,22 +566,27 @@
             <p class="login-welcome">សូមស្វាគមន៍មកកាន់</p>
             <h2 class="login-app-title">ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</h2>
         </div>
-        <form id="login-form" class="login-form" onsubmit="return false;">
+        <div class="login-form-container">
             <p class="login-prompt">សូមចូលគណនីរបស់អ្នកដើម្បីបន្ត</p>
-            <div class="input-group">
-                <i class="fa-solid fa-user"></i>
-                <input id="username" type="text" placeholder="ឈ្មោះគណនី" required>
-            </div>
-            <div class="input-group">
-                <i class="fa-solid fa-lock"></i>
-                <input id="password" type="password" placeholder="ពាក្យសម្ងាត់" required>
-            </div>
-            <div id="login-error" class="hidden"></div>
-            <button id="login-button" type="submit">
-                <span id="login-button-text">ចូលប្រើ</span>
-                <div id="login-spinner" class="spinner hidden"></div>
-            </button>
-        </form>
+            <form id="login-form" class="login-form" onsubmit="return false;">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input id="username" type="text" placeholder="ឈ្មោះគណនី" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input id="password" type="password" placeholder="ពាក្យសម្ងាត់" required>
+                </div>
+                <div id="login-error" class="hidden"></div>
+                <button id="login-button" type="submit">
+                    <span id="login-button-text">ចូលប្រើ</span>
+                    <div id="login-spinner" class="spinner hidden"></div>
+                </button>
+            </form>
+        </div>
+        <footer class="login-footer">
+            <p>អ្នកបង្កើតកម្មវិធី លោកគ្រូ ទឿន ដាលី</p>
+        </footer>
     </div>
 
     <div id="app-container" class="app-container hidden">
