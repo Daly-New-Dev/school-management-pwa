@@ -338,7 +338,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.25rem; /* Increased padding */
             gap: 1rem;
             margin-bottom: 1rem;
             border-radius: 12px;
@@ -349,17 +349,17 @@
         .teacher-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.25rem; /* Increased gap */
         }
         .teacher-photo {
-            width: 50px;
-            height: 50px;
+            width: 55px; /* Increased size */
+            height: 55px; /* Increased size */
             border-radius: 50%;
             background-color: var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 2rem; /* Increased icon size */
             color: var(--text-secondary);
             flex-shrink: 0;
             overflow: hidden;
@@ -370,26 +370,26 @@
             object-fit: cover;
         }
         .teacher-details h2 {
-            font-size: clamp(1rem, 2.5vh, 1.1rem);
+            font-size: clamp(1.1rem, 2.8vh, 1.2rem); /* Increased font size */
             font-weight: 600;
         }
         .teacher-details p {
-            font-size: clamp(0.8rem, 2vh, 0.85rem);
+            font-size: clamp(0.85rem, 2.2vh, 0.9rem); /* Increased font size */
             color: var(--text-secondary);
         }
         .teacher-stats {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem; /* Increased gap */
             text-align: center;
         }
         .stat-item .count {
-            font-size: clamp(1.1rem, 2.8vh, 1.2rem);
+            font-size: clamp(1.2rem, 3vh, 1.3rem); /* Increased font size */
             font-weight: 700;
             color: var(--primary-color);
             display: block;
         }
         .stat-item span:not(.count) {
-            font-size: clamp(0.65rem, 1.5vh, 0.7rem);
+            font-size: clamp(0.7rem, 1.7vh, 0.75rem); /* Increased font size */
             color: var(--text-secondary);
         }
 
@@ -621,6 +621,36 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Service Worker Update Logic ---
+            let newWorker;
+            function showUpdateBanner() {
+                const updateNotification = document.getElementById('update-notification');
+                updateNotification.classList.add('show');
+            }
+            document.getElementById('reload-button').addEventListener('click', () => {
+                newWorker.postMessage({ action: 'skipWaiting' });
+            });
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js').then(reg => {
+                    reg.addEventListener('updatefound', () => {
+                        newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                showUpdateBanner();
+                            }
+                        });
+                    });
+                }).catch(err => console.error('Service Worker registration failed:', err));
+
+                let refreshing;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (refreshing) return;
+                    window.location.reload();
+                    refreshing = true;
+                });
+            }
+
             // --- Prevent Browser Zooming ---
             document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
             document.addEventListener('keydown', e => { if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) e.preventDefault(); });
@@ -639,8 +669,6 @@
             const pullToRefreshIndicator = document.getElementById('pull-to-refresh');
             const refreshButton = document.getElementById('refresh-button');
             const schoolLogoImg = document.getElementById('school-logo-img');
-            const updateNotification = document.getElementById('update-notification');
-            const reloadButton = document.getElementById('reload-button');
             
             // --- Role-specific UI elements ---
             const teacherPhotoContainer = document.getElementById('teacher-photo');
@@ -673,36 +701,6 @@
                 "Home": "ទំព័រដើម",
                 "Operations": "ប្រតិបត្តិការ"
             };
-            
-            // --- Service Worker Update Logic ---
-            let newWorker;
-            function showUpdateBanner() {
-                updateNotification.classList.add('show');
-            }
-            reloadButton.addEventListener('click', () => {
-                newWorker.postMessage({ action: 'skipWaiting' });
-            });
-
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/service-worker.js').then(reg => {
-                    reg.addEventListener('updatefound', () => {
-                        newWorker = reg.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                showUpdateBanner();
-                            }
-                        });
-                    });
-                }).catch(err => console.error('Service Worker registration failed:', err));
-
-                let refreshing;
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    if (refreshing) return;
-                    window.location.reload();
-                    refreshing = true;
-                });
-            }
-
 
             // --- Live Data Refresh Function ---
             async function refreshAndShowDashboard(username, password) {
