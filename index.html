@@ -47,19 +47,21 @@
         body {
             font-family: 'Kantumruy Pro', sans-serif;
             -webkit-font-smoothing: antialiased;
-            background-color: var(--text-dark); /* Dark background for the whole page */
+            background-color: var(--text-dark);
             color: var(--text-dark);
             height: 100vh;
-            overflow: hidden; /* Prevent scrolling of the body */
+            /* Use dvh for dynamic viewport height to account for mobile browser bars */
+            height: 100dvh;
+            overflow: hidden;
             display: flex;
-            justify-content: center; /* Center the app container */
-            align-items: center; /* Center the app container */
+            justify-content: center;
+            align-items: center;
         }
 
         /* --- Native App Feel Enhancements --- */
         body {
-            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
-            touch-action: manipulation; /* Improve touch responsiveness */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         .hidden {
@@ -70,8 +72,8 @@
         .login-container {
             width: 100%;
             height: 100%;
-            max-width: 384px;
-            max-height: 824px;
+            max-width: 420px;
+            max-height: 900px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -140,23 +142,22 @@
             to { transform: rotate(360deg); }
         }
 
-
-        /* --- Main App Container --- */
+        /* --- Main App Container (Responsive) --- */
         .app-container {
             width: 100%;
             height: 100%;
-            max-width: 384px;   /* Max width constraint */
-            max-height: 824px;  /* Max height constraint */
+            max-width: 420px;
+            max-height: 900px;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Ensure container manages its own scrolling */
-            background-color: var(--background-color); /* Background for the app itself */
-            position: relative; /* Needed for fixed children */
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Add shadow for better visibility */
-            border-radius: 10px; /* Optional: rounded corners for the container */
+            overflow: hidden;
+            background-color: var(--background-color);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 10px;
         }
 
-        /* --- Header Section (Fixed) --- */
+        /* --- Header Section --- */
         .header {
             background-color: var(--primary-color);
             color: var(--text-light);
@@ -164,7 +165,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0; /* Prevent header from shrinking */
+            flex-shrink: 0;
             position: absolute;
             top: 0;
             left: 0;
@@ -190,11 +191,11 @@
             flex-shrink: 0;
         }
         .school-details h1 {
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2.2vh, 0.9rem);
             font-weight: 700;
         }
         .school-details p {
-            font-size: 0.75rem;
+            font-size: clamp(0.7rem, 1.8vh, 0.75rem);
             color: var(--text-light-secondary);
         }
         .header-icons {
@@ -207,17 +208,29 @@
             cursor: pointer;
         }
 
+        /* --- Main Content Area (Responsive) --- */
+        main {
+            flex-grow: 1;
+            display: flex; /* Use flexbox for better vertical alignment */
+            flex-direction: column;
+            overflow: hidden; /* Prevent scrolling in main, scrolling is handled by feature-menu if needed */
+            padding: 1rem;
+            padding-top: calc(45px + 2rem); /* Dynamic padding top */
+            padding-bottom: 75px; /* Bottom nav height */
+        }
+
         /* --- Teacher Profile Bar --- */
         .teacher-profile-bar {
             background-color: var(--secondary-color);
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Aligns items to the edges */
+            justify-content: space-between;
             padding: 0.75rem 1rem;
             gap: 1rem;
             margin-bottom: 1rem;
             border-radius: 12px;
             cursor: pointer;
+            flex-shrink: 0; /* Prevent this bar from shrinking */
         }
         .teacher-info {
             display: flex;
@@ -235,16 +248,13 @@
             font-size: 1.8rem;
             color: var(--text-secondary);
             flex-shrink: 0;
-            border: 2px solid var(--secondary-color);
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
         }
         .teacher-details h2 {
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 2.5vh, 1.1rem);
             font-weight: 600;
-            color: var(--text-dark);
         }
         .teacher-details p {
-            font-size: 0.85rem;
+            font-size: clamp(0.8rem, 2vh, 0.85rem);
             color: var(--text-secondary);
         }
         .teacher-stats {
@@ -253,64 +263,55 @@
             text-align: center;
         }
         .stat-item .count {
-            font-size: 1.2rem;
+            font-size: clamp(1.1rem, 2.8vh, 1.2rem);
             font-weight: 700;
             color: var(--primary-color);
-            display: block;
         }
         .stat-item span:not(.count) {
-            font-size: 0.7rem;
+            font-size: clamp(0.65rem, 1.5vh, 0.7rem);
             color: var(--text-secondary);
-            font-weight: 500;
         }
 
-
-        /* --- Main Content Area --- */
-        main {
-            flex-grow: 1;
-            overflow-y: hidden; /* Scrolling disabled */
-            padding: 1rem;
-            padding-top: calc(45px + 1.5rem + 1rem); /* Header height + padding */
-            padding-bottom: 75px; /* Bottom nav height */
-        }
-
-        /* --- Feature Menu Grid --- */
+        /* --- Feature Menu Grid (Responsive) --- */
         .feature-menu {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            /* Use auto-fill to create as many columns as fit, with a min-width */
+            grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            /* Use fr unit for rows to fill available space */
+            grid-auto-rows: 1fr;
             gap: 1rem;
-            height: 100%;
+            flex-grow: 1; /* Allow the grid to fill the remaining space */
+            overflow-y: auto; /* Allow scrolling within the grid if content overflows */
         }
         .menu-item {
             background: var(--secondary-color);
             border-radius: 12px;
-            border: 2px solid var(--border-color);
-            padding: 1rem 0.5rem;
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 0.5rem;
         }
         .menu-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
         .menu-item i {
-            font-size: 2rem;
+            font-size: clamp(1.8rem, 4vh, 2.2rem);
             color: var(--primary-color);
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
         .menu-item span {
-            font-size: 0.75rem;
+            font-size: clamp(0.7rem, 1.8vh, 0.75rem);
             font-weight: 600;
             color: var(--text-secondary);
-            line-height: 1.3;
         }
 
-        /* --- Bottom Navigation Bar (Fixed) --- */
+        /* --- Bottom Navigation Bar --- */
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -321,8 +322,8 @@
             justify-content: space-around;
             padding: 0.5rem 0;
             border-top: 1px solid var(--border-color);
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             z-index: 100;
+            flex-shrink: 0;
         }
         .nav-item {
             display: flex;
@@ -333,14 +334,12 @@
             padding: 0.2rem;
             flex-grow: 1;
             cursor: pointer;
-            transition: color 0.3s;
         }
         .nav-item.active, .nav-item:hover {
             color: var(--primary-color);
         }
         .nav-item i {
             font-size: 1.3rem;
-            margin-bottom: 0.25rem;
         }
         .nav-item span {
             font-size: 0.7rem;
@@ -356,7 +355,6 @@
             height: 100%;
             background-color: rgba(10, 25, 47, 0.7);
             backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -374,7 +372,6 @@
             padding: 1.5rem 2rem;
             border-radius: 15px;
             text-align: center;
-            color: var(--text-dark);
             box-shadow: 0 5px 25px rgba(0,0,0,0.1);
             transform: scale(0.9);
             transition: transform 0.3s ease;
@@ -398,10 +395,6 @@
             font-family: 'Kantumruy Pro', sans-serif;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .modal-box button:hover {
-            background-color: #2a52be;
         }
     </style>
 </head>
@@ -545,6 +538,17 @@
                 "Messages": "សារ"
             };
 
+            // --- Session Handling Logic ---
+            function checkSession() {
+                const userData = sessionStorage.getItem('schoolAppUser');
+                if (userData) {
+                    const parsedData = JSON.parse(userData);
+                    setupDashboard(parsedData);
+                    loginContainer.classList.add('hidden');
+                    appContainer.classList.remove('hidden');
+                }
+            }
+
             // --- Login Logic ---
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -556,24 +560,21 @@
                 loginSpinner.classList.remove('hidden');
                 loginError.classList.add('hidden');
                 
-                // **UPDATED FETCH LOGIC**
-                const formData = new FormData();
-                formData.append('username', username);
-                formData.append('password', password);
-
                 try {
-                    // We use a GET request with parameters in the URL to avoid complex CORS preflight requests on desktop
                     const response = await fetch(`${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login`, {
                         method: 'GET',
                         mode: 'cors'
                     });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
-                    // The actual doPost will be triggered by a redirect from doGet in the Apps Script
-                    const finalResponse = await fetch(response.url);
-                    const result = await finalResponse.json();
-
+                    const result = await response.json();
 
                     if (result.status === 'success') {
+                        // Save user data to session storage
+                        sessionStorage.setItem('schoolAppUser', JSON.stringify(result.data));
                         setupDashboard(result.data);
                         loginContainer.classList.add('hidden');
                         appContainer.classList.remove('hidden');
@@ -612,13 +613,14 @@
             // --- Logout Logic ---
             logoutButton.addEventListener('click', (e) => {
                 e.preventDefault();
+                // Clear session storage
+                sessionStorage.removeItem('schoolAppUser');
                 appContainer.classList.add('hidden');
                 loginContainer.classList.remove('hidden');
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 loginError.classList.add('hidden');
             });
-
 
             // --- Modal Functionality ---
             const modalOverlay = document.getElementById('modal-overlay');
@@ -651,6 +653,9 @@
             modalOverlay.addEventListener('click', (event) => {
                 if (event.target === modalOverlay) hideModal();
             });
+
+            // --- Initial Load ---
+            checkSession();
         });
     </script>
 </body>
