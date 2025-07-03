@@ -66,6 +66,38 @@
             display: none !important;
         }
 
+        /* --- Update Notification Banner --- */
+        .update-banner {
+            position: absolute;
+            bottom: 90px; /* Position above the nav bar */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text-dark);
+            color: var(--text-light);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .update-banner.show {
+            opacity: 1;
+        }
+        .update-banner button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-family: 'Kantumruy Pro', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
         /* --- Full Page Loader (New Design) --- */
         .loader-overlay {
             position: absolute;
@@ -312,7 +344,7 @@
             border-radius: 12px;
             cursor: pointer;
             flex-shrink: 0;
-            border: 1px solid var(--primary-color); /* Adjusted to 1px */
+            border: 1px solid var(--primary-color);
         }
         .teacher-info {
             display: flex;
@@ -372,7 +404,7 @@
         .menu-item {
             background: var(--secondary-color);
             border-radius: 12px;
-            border: 1px solid var(--primary-color); /* Adjusted to 1px blue */
+            border: 1px solid var(--primary-color);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -573,21 +605,22 @@
         </nav>
     </div>
 
-    <!-- --- Universal Modal --- -->
+    <!-- --- Universal Modal Pop-up --- -->
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal-box">
             <p id="modal-text"></p>
             <button id="modal-close">បិទ</button>
         </div>
     </div>
+
+    <!-- Update Available Banner -->
+    <div id="update-notification" class="update-banner hidden">
+        <span>កំណែថ្មីបានត្រៀមរួចរាល់</span>
+        <button id="reload-button">ធ្វើបច្ចុប្បន្នភាព</button>
+    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- PWA Service Worker Registration ---
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/service-worker.js').catch(err => console.error('Service Worker registration failed:', err));
-            }
-
             // --- Prevent Browser Zooming ---
             document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
             document.addEventListener('keydown', e => { if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) e.preventDefault(); });
@@ -606,6 +639,8 @@
             const pullToRefreshIndicator = document.getElementById('pull-to-refresh');
             const refreshButton = document.getElementById('refresh-button');
             const schoolLogoImg = document.getElementById('school-logo-img');
+            const updateNotification = document.getElementById('update-notification');
+            const reloadButton = document.getElementById('reload-button');
             
             // --- Role-specific UI elements ---
             const teacherPhotoContainer = document.getElementById('teacher-photo');
@@ -638,6 +673,36 @@
                 "Home": "ទំព័រដើម",
                 "Operations": "ប្រតិបត្តិការ"
             };
+            
+            // --- Service Worker Update Logic ---
+            let newWorker;
+            function showUpdateBanner() {
+                updateNotification.classList.add('show');
+            }
+            reloadButton.addEventListener('click', () => {
+                newWorker.postMessage({ action: 'skipWaiting' });
+            });
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js').then(reg => {
+                    reg.addEventListener('updatefound', () => {
+                        newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                showUpdateBanner();
+                            }
+                        });
+                    });
+                }).catch(err => console.error('Service Worker registration failed:', err));
+
+                let refreshing;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (refreshing) return;
+                    window.location.reload();
+                    refreshing = true;
+                });
+            }
+
 
             // --- Live Data Refresh Function ---
             async function refreshAndShowDashboard(username, password) {
@@ -722,15 +787,13 @@
                 userNameEl.textContent = data.FullName;
                 userRoleEl.textContent = data.ClassGrade;
                 
-                // --- School Logo Logic ---
                 if (data.SchoolLogo && data.SchoolLogo.trim() !== '') {
                     schoolLogoImg.src = data.SchoolLogo;
                 }
                 schoolLogoImg.onerror = () => {
-                    schoolLogoImg.src = 'school_logo.png'; // Fallback to local logo
+                    schoolLogoImg.src = 'school_logo.png'; 
                 };
 
-                // --- Profile Photo Logic ---
                 teacherPhotoContainer.innerHTML = ''; 
                 
                 const showIcon = (iconClass) => {
