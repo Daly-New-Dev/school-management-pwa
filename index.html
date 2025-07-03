@@ -353,7 +353,7 @@
             font-size: clamp(1.1rem, 2.8vh, 1.2rem);
             font-weight: 700;
             color: var(--primary-color);
-            display: block; /* **KEY CHANGE** */
+            display: block;
         }
         .stat-item span:not(.count) {
             font-size: clamp(0.65rem, 1.5vh, 0.7rem);
@@ -512,7 +512,7 @@
         <!-- --- Header (New Layout) --- -->
         <header class="header">
             <div class="header-side">
-                 <img src="school_logo.png" alt="School Logo" class="logo">
+                 <img id="school-logo-img" src="school_logo.png" alt="School Logo" class="logo">
             </div>
             <div class="school-title-block">
                 <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
@@ -520,7 +520,6 @@
             </div>
             <div class="header-side">
                 <i id="refresh-button" class="fa-solid fa-rotate-right" data-feature="Refresh"></i>
-                <i class="fa-regular fa-bell" data-feature="Notifications"></i>
                 <i class="fa-solid fa-qrcode" data-feature="QR Code"></i>
             </div>
         </header>
@@ -568,7 +567,7 @@
         <nav class="bottom-nav">
             <a class="nav-item active" data-feature="Home"> <i class="fa-solid fa-house"></i> <span>ទំព័រដើម</span> </a>
             <a class="nav-item" data-feature="Operations"> <i class="fa-solid fa-layer-group"></i> <span>ប្រតិបត្តិការ</span> </a>
-            <a class="nav-item" data-feature="Messages"> <i class="fa-solid fa-comments"></i> <span>សារ</span> </a>
+            <a class="nav-item" data-feature="Notifications"> <i class="fa-regular fa-bell"></i> <span>ការជូនដំណឹង</span> </a>
             <a id="logout-button" class="nav-item" data-feature="Logout"> <i class="fa-solid fa-right-from-bracket"></i> <span>ចាកចេញ</span> </a>
         </nav>
     </div>
@@ -605,6 +604,7 @@
             const mainContent = document.getElementById('main-content');
             const pullToRefreshIndicator = document.getElementById('pull-to-refresh');
             const refreshButton = document.getElementById('refresh-button');
+            const schoolLogoImg = document.getElementById('school-logo-img');
             
             // --- Role-specific UI elements ---
             const teacherPhotoContainer = document.getElementById('teacher-photo');
@@ -635,8 +635,7 @@
                 "Announcements": "សេចក្តីជូនដំណឹង",
                 "Settings": "ការកំណត់",
                 "Home": "ទំព័រដើម",
-                "Operations": "ប្រតិបត្តិការ",
-                "Messages": "សារ"
+                "Operations": "ប្រតិបត្តិការ"
             };
 
             // --- Live Data Refresh Function ---
@@ -722,6 +721,15 @@
                 userNameEl.textContent = data.FullName;
                 userRoleEl.textContent = data.ClassGrade;
                 
+                // --- School Logo Logic ---
+                if (data.SchoolLogo && data.SchoolLogo.trim() !== '') {
+                    schoolLogoImg.src = data.SchoolLogo;
+                }
+                schoolLogoImg.onerror = () => {
+                    schoolLogoImg.src = 'school_logo.png'; // Fallback to local logo
+                };
+
+                // --- Profile Photo Logic ---
                 teacherPhotoContainer.innerHTML = ''; 
                 
                 const showIcon = (iconClass) => {
