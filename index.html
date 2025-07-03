@@ -551,7 +551,11 @@
                 appContainer.classList.add('hidden');
 
                 try {
-                    const response = await fetch(`${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login`, {
+                    // **FIX**: Add a unique timestamp to the URL to bypass the browser cache
+                    const timestamp = new Date().getTime();
+                    const fetchURL = `${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login&t=${timestamp}`;
+
+                    const response = await fetch(fetchURL, {
                         method: 'GET',
                         mode: 'cors'
                     });
@@ -561,6 +565,7 @@
                     const result = await response.json();
 
                     if (result.status === 'success') {
+                        // We still store the user data for display, but credentials for re-fetch
                         sessionStorage.setItem('schoolAppUser', JSON.stringify(result.data));
                         setupDashboard(result.data);
                         appContainer.classList.remove('hidden');
@@ -600,7 +605,11 @@
                 loginError.classList.add('hidden');
                 
                 try {
-                    const response = await fetch(`${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login`, {
+                    // **FIX**: Add a unique timestamp to the URL to bypass the browser cache
+                    const timestamp = new Date().getTime();
+                    const fetchURL = `${SCRIPT_URL}?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&action=login&t=${timestamp}`;
+
+                    const response = await fetch(fetchURL, {
                         method: 'GET',
                         mode: 'cors'
                     });
