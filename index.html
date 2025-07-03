@@ -5,6 +5,7 @@
     <!-- Core PWA & Mobile-First Meta Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#3963de">
     <title>ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</title>
@@ -275,6 +276,19 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+        .page.right, .page.left {
+            transform: translateX(100%);
+        }
+        .page.left {
+             transform: translateX(-100%);
+        }
+        .page.center {
+            transform: translateX(0);
         }
 
         /* --- Header Section (New Flexbox Layout) --- */
@@ -589,7 +603,7 @@
     </div>
 
     <div id="app-container" class="page-container hidden">
-        <div id="main-page" class="page">
+        <div id="main-page" class="page center">
             <!-- --- Header (New Layout) --- -->
             <header class="header">
                 <div class="header-side">
@@ -729,7 +743,7 @@
             const femaleStudentsEl = document.getElementById('female-students');
 
             // --- Backend URL ---
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqDcAK-0j5J_tNmIIDLtGbKjuD1uHpoKCYKn-wWONv_M2catWyWSpGv4cVqjNdbLkerA/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfcWRBRy58CNXtU_pRz9f0HbhlWCmkLwHg618T26oQdyyrg0XDOVYUol75Ba57YQtu-g/exec";
 
             // --- Translation Map ---
             const featureTranslations = {
