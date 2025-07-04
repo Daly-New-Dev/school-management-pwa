@@ -5,7 +5,6 @@
     <!-- Core PWA & Mobile-First Meta Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#3963de">
     <title>ប្រព័ន្ធគ្រប់គ្រងសាលារៀន</title>
@@ -278,19 +277,6 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: transform 0.3s ease-in-out;
-        }
-        .page.left {
-             transform: translateX(-100%);
-        }
-        .page.center {
-            transform: translateX(0);
-        }
-        .page.right {
-            transform: translateX(100%);
         }
 
         /* --- Header Section (New Flexbox Layout) --- */
@@ -605,11 +591,11 @@
     </div>
 
     <div id="app-container" class="page-container hidden">
-        <div id="main-page" class="page center">
+        <div id="main-page" class="page">
             <!-- --- Header (New Layout) --- -->
             <header class="header">
                 <div class="header-side">
-                     <img id="school-logo-img" src="school_logo.PNG" alt="School Logo" class="logo">
+                     <img id="school-logo-img" src="icons/appicon.PNG" alt="School Logo" class="logo">
                 </div>
                 <div class="school-title-block">
                     <h1>វិទ្យាល័យ ហ៊ុន សែន ក្រាំងស្រម៉</h1>
